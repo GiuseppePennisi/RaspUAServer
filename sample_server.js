@@ -1,10 +1,20 @@
 let os = require("os");
-
+"use strict";
 let opcua = require("node-opcua");
-
+const path = require("path");
 let util = require("./utility");
+const _ = require("underscore");
+const assert = require("assert");
+
+function constructFilename(filename) {
+    return path.join(__dirname,"../",filename);
+}
 
 let server = new opcua.OPCUAServer({
+    
+    certificatefile:constructFilename("/certificates/pippoCertificate.pem"),
+    privaKeyFile: constructFilename("certificates/server_key_2048.pem"),
+
     port: 4334,
     resourcePath: "UA/RaspServer",
     buildInfo: {
@@ -82,6 +92,7 @@ server.initialize(() => {
     server.start(() => {
         console.log(`Server is now listening port ${server.endpoints[0].port}... (press CTRL+C to stop)`);
         let endpointUrl = server.endpoints[0].endpointDescriptions()[0].endpointUrl;
+        
         console.log("The primary server endpoint url is ", endpointUrl);
     });
 });
